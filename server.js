@@ -1,10 +1,6 @@
 // ======= Ensure dependencies =======
 require('dotenv').config()
 
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config({path: __dirname+'/.env'});
-}
-
 // ======= Init application =======
 const express = require('express')
 const mongoose = require('mongoose')
@@ -40,11 +36,3 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING)
     .catch((error) => {
         console.log('[ERROR] ', new Date().toLocaleString(), ' => ', error)
     })
-
-// static files (build of your frontend)
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../frontend', 'build')));
-    app.get('/*', (req, res) => {
-      res.sendFile(path.join(__dirname, '../frontend', 'build', 'index.html'));
-    })
-  }
