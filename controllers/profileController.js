@@ -62,7 +62,7 @@ const getProfileByUsername = async (req, res, next) => {
 
 //create
 const createProfile = async (req, res, next) => {
-    let uuidv4 = uuid.v4();
+    let referencecode = uuid.v4();
     console.log(req.body)
     const {name, username, pronouns, bio, links, occupation} = req.body
     // const PROFILE = {name:name, username:username, pronouns:pronouns, bio:bio, links:links, occupation:occupation }
@@ -78,7 +78,7 @@ const createProfile = async (req, res, next) => {
             console.log('[ERROR] ', new Date().toLocaleString(), ' => ', "Cannot create user as already exists...")
             return res.status(409).json({error: "Username already taken!"})
         }
-        const profile = await Profile.create({name, username, pronouns, bio, links, occupation, uuidv4})
+        const profile = await Profile.create({name, username, referencecode})
         res.status(200).json(profile)
     } catch (exception) {
         console.log('[ERROR] ', new Date().toLocaleString(), ' => ', exception)
