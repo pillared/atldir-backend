@@ -1,6 +1,7 @@
 const Profile = require('../models/ProfileModel')
 const mongoose = require('mongoose')
 const uuid = require('uuid')
+
 // import {v4 as uuidv4} from 'uuid';
 
 function validateUsername(username){
@@ -15,6 +16,7 @@ function validateUsername(username){
 
 function validateProfile({name, username}) {  
     var t = ""
+    console.log(name, username)
     let nameRegex = /^[a-z]*([\s]?[a-z]+)+$/gmi;
     if (name === null || name === "" || name.length > 20 || !name.match(nameRegex)){
         t += ("Name is not valid. ")
@@ -25,7 +27,7 @@ function validateProfile({name, username}) {
 }  
 
 //get all by most recently created
-const getAllProfiles = async (req, res) => {
+const getAllProfiles = async (req, res, next) => {
     try{
         const profiles = await Profile.find({}).sort({createdAt: -1})
         res.status(200).json(profiles)
@@ -36,7 +38,7 @@ const getAllProfiles = async (req, res) => {
 }
 
 //get all by most recently created
-const getProfileByUsername = async (req, res) => {
+const getProfileByUsername = async (req, res, next) => {
     try{
         const username = req.params.username
         var t = validateUsername(username)
@@ -59,9 +61,10 @@ const getProfileByUsername = async (req, res) => {
 }
 
 //create
-const createProfile = async (req, res) => {
-    let uuid = uuidv4();
-    const {name, username, pronouns, bio, links, occupation, referencecode} = req.body
+const createProfile = async (req, res, next) => {
+    let uuidv4 = uuid.v4();
+    console.log(req.body)
+    const {name, username, pronouns, bio, links, occupation} = req.body
     // const PROFILE = {name:name, username:username, pronouns:pronouns, bio:bio, links:links, occupation:occupation }
     try{
         var t = validateProfile({name, username})
@@ -75,7 +78,7 @@ const createProfile = async (req, res) => {
             console.log('[ERROR] ', new Date().toLocaleString(), ' => ', "Cannot create user as already exists...")
             return res.status(409).json({error: "Username already taken!"})
         }
-        const profile = await Profile.create({name, username, pronouns, bio, links, occupation, uuid})
+        const profile = await Profile.create({name, username, pronouns, bio, links, occupation, uuidv4})
         res.status(200).json(profile)
     } catch (exception) {
         console.log('[ERROR] ', new Date().toLocaleString(), ' => ', exception)
@@ -85,11 +88,11 @@ const createProfile = async (req, res) => {
 
 
 // update a Profile
-const updateProfile = async (req, res) => {
+const updateProfile = async (req, res, next) => {
     
 }
 // delete a Profile
-const deleteProfile = async (req, res) => {
+const deleteProfile = async (req, res, next) => {
 
 }
 

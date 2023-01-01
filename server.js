@@ -1,14 +1,20 @@
 // ======= Ensure dependencies =======
 require('dotenv').config()
-
 // ======= Init application =======
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 const mainRoutes = require('./routes/main')
 const homeRoutes = require('./routes/home')
 const profileRoutes = require('./routes/profile')
 const app = express()
+app.options('*', cors())
+// app.use(express.static(path.join(__dirname, 'build')));
+
+// app.get('/', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+// });
 
 // ======= MIDDLEWARE =======
 app.use(express.json()) //allows us to use .body within the request, and whatnot

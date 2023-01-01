@@ -1,4 +1,20 @@
 const express = require('express')
+const cors = require('cors')
+require('dotenv').config()
+// const whitelist = ['http://localhost:3000', process.env.CLIENT_URL]
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true)
+//     } else {
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   },
+// }
+var corsOptions = {
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
 const {
     getAllProfiles,
     getProfileByUsername,
@@ -11,19 +27,19 @@ const router = express.Router()
 
 
 //GET ALL user profiles
-router.get('/all', getAllProfiles)
+router.get('/all', cors(corsOptions), getAllProfiles)
 
 //GET a users profile
-router.get('/:username', getProfileByUsername)
+router.get('/:username', cors(corsOptions), getProfileByUsername)
 
 //POST a users profile
-router.post('/', createProfile)
+router.post('/', cors(corsOptions), createProfile)
 
 //UPDATE a users profile
-router.patch('/', updateProfile)
+router.patch('/', cors(corsOptions), updateProfile)
 
 //DELETE a users profile
-router.delete('/', deleteProfile)
+router.delete('/', cors(corsOptions), deleteProfile)
 
 
 module.exports = router
