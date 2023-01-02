@@ -10,18 +10,36 @@ function validateUsername(username){
     if (username === null || username === "" || username.length > 20 || !username.match(usernameRegex)){
         t += "Username is not valid. "
     }
-
     return t
 }
 
-function validateProfile({name, username}) {  
+function validateFirstname(realname){
     var t = ""
-    console.log(name, username)
-    let nameRegex = /^[a-z]*([\s]?[a-z]+)+$/gmi;
-    if (name === null || name === "" || name.length > 20 || !name.match(nameRegex)){
-        t += ("Name is not valid. ")
+    let realnameRegex = /^[a-z]*([\s]?[a-z]+)+$/gmi;
+    if (realname === null || realname === "" || realname.length > 20 || !realname.match(realnameRegex)){
+        t += "First name is not valid. "
     }
+    return t
+}
+
+function validateLastname(realname){
+    var t = ""
+    let realnameRegex = /^[a-z]*([\s]?[a-z]+)+$/gmi;
+    if (realname === null || realname === "" || realname.length > 20 || !realname.match(realnameRegex)){
+        t += "Last name is not valid. "
+    }
+    return t
+}
+
+function validateProfile(reqBody) {  
+    const {username, password, refcode, fname, lname, contactType, email, phone, smhandle} = reqBody.data
+    var t = ""
+    console.log(reqBody)
+    console.log(username, password, refcode, fname, lname, contactType, email, phone, smhandle)
     t += validateUsername(username)
+    t += validateFirstname(fname)
+    t += validateLastname(lname)
+
 
     return t
 }  
@@ -63,11 +81,13 @@ const getProfileByUsername = async (req, res, next) => {
 //create
 const createProfile = async (req, res, next) => {
     let referencecode = uuid.v4();
-    console.log(req.body)
-    const {name, username, pronouns, bio, links, occupation} = req.body
+    // console.log(req)
+    // console.log(req.body)
+    const {username, password, refcode, fname, lname, contactType, email, phone, smhandle} = req.body.data
+    // console.log(username)
     // const PROFILE = {name:name, username:username, pronouns:pronouns, bio:bio, links:links, occupation:occupation }
     try{
-        var t = validateProfile({name, username})
+        var t = validateProfile(req.body)
         console.log(t)
         if (t !== ""){
             console.log('[ERROR] ', new Date().toLocaleString(), ' => ', "Invalid syntax...")
@@ -78,8 +98,15 @@ const createProfile = async (req, res, next) => {
             console.log('[ERROR] ', new Date().toLocaleString(), ' => ', "Cannot create user as already exists...")
             return res.status(409).json({error: "Username already taken!"})
         }
+        let name = `${fname} ${lname}`
         const profile = await Profile.create({name, username, referencecode})
+        console.log("34")
         res.status(200).json(profile)
+        // res.status(200).send("Profile successfully created.")
+
+        console.log("35")
+
+        return
     } catch (exception) {
         console.log('[ERROR] ', new Date().toLocaleString(), ' => ', exception)
         res.status(500).json({error: exception.message})
