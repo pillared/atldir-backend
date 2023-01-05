@@ -11,10 +11,10 @@ require('dotenv').config()
 //     }
 //   },
 // }
-var corsOptions = {
-    origin: `${process.env.CLIENT_URL}`,
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-  }
+// var corsOptions = {
+//     origin: `${process.env.CLIENT_URL}`,
+//     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+//   }
 const {
     getAllProfiles,
     getProfileByUsername,
@@ -27,19 +27,19 @@ const router = express.Router()
 
 
 //GET ALL user profiles
-router.get('/all', cors(corsOptions), getAllProfiles)
+router.get('/all', getAllProfiles)
 
 //GET a users profile
-router.get('/:username', cors(corsOptions), getProfileByUsername)
+router.get('/:username', getProfileByUsername)
 
 //POST a users profile
-router.post('/', cors(corsOptions), createProfile)
+router.post('/', createProfile)
 
 //UPDATE a users profile
-router.patch('/', cors(corsOptions), updateProfile)
+router.patch('/', updateProfile)
 
 //DELETE a users profile
-router.delete('/', cors(corsOptions), deleteProfile)
+router.delete('/', deleteProfile)
 
 
 module.exports = router

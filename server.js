@@ -1,20 +1,41 @@
-// ======= Ensure dependencies =======
 require('dotenv').config()
-// ======= Init application =======
+// init 
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 
+// magic deps 
+const { Magic } = require('@magic-sdk/admin');
+const path = require('path');
+
+// routes
 const mainRoutes = require('./routes/main')
 const homeRoutes = require('./routes/home')
 const profileRoutes = require('./routes/profile')
+
+// app
 const app = express()
 app.options('*', cors())
-// app.use(express.static(path.join(__dirname, 'build')));
 
-// app.get('/', function (req, res) {
-//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-// });
+
+const whitelist = ['http://localhost:3000', process.env.CLIENT_URL]
+const corsOptions = {
+        origin: function (origin, callback) {
+            if (whitelist.indexOf(origin) !== -1) {
+                callback(null, true)
+            } else {
+                callback(new Error('Not allowed by CORS'))
+            }
+        },
+        optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors(corsOptions));
+
+// var corsOptions = {
+//     origin: `${process.env.CLIENT_URL}`,
+//     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+//   }
+
 
 // ======= MIDDLEWARE =======
 app.use(express.json()) //allows us to use .body within the request, and whatnot
